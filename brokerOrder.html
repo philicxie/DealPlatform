@@ -1,0 +1,149 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <style>
+        .btn-group{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="text-center">
+                期货交易平台
+            </h3>
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a data-target=".navbar-responsive-collapse" data-toggle="collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a> <a href="#" class="brand">XZ.com</a>
+                        <div class="nav-collapse collapse navbar-responsive-collapse">
+                            <ul class="nav">
+                                <li>
+                                    <a href="brokerProduct.html">货物</a>
+                                </li>
+                                <li>
+                                    <a href="brokerOrder.html">订单</a>
+                                </li>
+                            </ul>
+                            <ul class="nav pull-right">
+                                <li>
+                                    <a href="brokerMain.html">货品管理</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span3">
+            <select id="select_prd" class="form-control">
+            </select>
+            <select id="select_type" class="form-control">
+                <option value="0">进行中</option>
+                <option value="1">已完成</option>
+            </select><br/>
+            <button class="btn" id="search_btn">查询</button>
+        </div>
+        <div class="span8">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>产品</th>
+                    <th>买方</th>
+                    <th>卖方</th>
+                    <th>数量</th>
+                    <th>价格</th>
+                </tr>
+                </thead>
+                <tbody id="orders_in">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("document").ready(function(){
+        $.ajax({
+            url: "getProducts.action",
+            type: "GET",
+            success: function(data, textStatus){
+                console.log(data.result);
+                $("#select_prd").html("");
+                var temString = "";
+                for(var i=0;i<data.result.length;i++){
+                    temString += "<option value=\""+data.result[i].pid+"\">"+data.result[i].name+"</option>";
+                }
+                $("#select_prd").append(temString);
+            }
+        });
+    });
+
+    $("#search_btn").click(function(){
+        var prd_id = $("#select_prd").children('option:selected').val();
+        var search_type = $("#select_type").children('option:selected').val();
+        if(search_type==0){
+            $.ajax({
+                url: "getPendingOrders.action",
+                type: "GET",
+                data: "pid="+prd_id,
+                success: function(data, textStatus){
+                    console.log(data.result);
+                    var temString = "";
+                    $("#orders_in").html("");
+                    for(var i=0;i<data.result.length;i++){
+                        if(i%2==0){
+                            temString += "<tr class='info'>";
+                        }else{
+                            temString += "<tr class='warning'>";
+                        }
+                        temString += "<td>"+data.result[i].pname+"</td>";
+                        temString += "<td>"+data.result[i].btrader+"</td>";
+                        temString += "<td>"+data.result[i].strader+"</td>";
+                        temString += "<td>"+data.result[i].amount+"</td>";
+                        temString += "<td>"+data.result[i].price+"</td>";
+                        temString += "</tr>";
+                    }
+                }
+            });
+        }else{
+            $.ajax({
+                url: "getCompletedOrders.action",
+                type: "GET",
+                data: "pid="+prd_id,
+                success: function(data, textStatus){
+                    console.log(data.result);
+                    var temString = "";
+                    $("#orders_in").html("");
+                    for(var i=0;i<data.result.length;i++){
+                        if(i%2==0){
+                            temString += "<tr class='info'>";
+                        }else{
+                            temString += "<tr class='warning'>";
+                        }
+                        temString += "<td>"+data.result[i].pname+"</td>";
+                        temString += "<td>"+data.result[i].btrader+"</td>";
+                        temString += "<td>"+data.result[i].strader+"</td>";
+                        temString += "<td>"+data.result[i].amount+"</td>";
+                        temString += "<td>"+data.result[i].price+"</td>";
+                        temString += "</tr>";
+                    }
+                }
+
+            });
+        }
+
+    });
+
+</script>
+</body>

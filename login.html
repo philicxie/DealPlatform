@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <head>
+        <link href="css/bootstrap-combined.css" rel="stylesheet">
+		<script src="js/jquery-1.12.3.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+    </head>
+<body>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span4">
+		</div>
+		<div class="span4">
+            </br></br></br></br>
+            <legend>欢迎进入期货交易平台</legend>
+            <label>用户名</label><input id="username_txt" type="text" />
+            <label>密码</label><input id="password_txt" type="password" /><br/>
+
+            <button class="btn" id="login_btn">登录</button>
+		</div>
+		<div class="span4">
+		</div>
+	</div>
+</div>
+    <script type="text/javascript">
+        $("#login_btn").click(function(){
+
+            var username = $("#username_txt").val();
+            var password = $("#password_txt").val();
+            $.ajax({
+                url: "login.action",
+                type:"GET",
+                data: "name="+username+"&password="+password,
+                success:function(data,textStatus){
+                	console.log("1");
+					window.location.href="main.html?id="+data.id+"&name="+username;
+                },
+                error:function(data,textStatus){
+                	console.log("2");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
